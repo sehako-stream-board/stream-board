@@ -6,6 +6,7 @@ import com.sehako.streamboard.application.response.PostRetrieveResponse;
 import com.sehako.streamboard.common.response.JsonResponse;
 import com.sehako.streamboard.common.response.message.code.SuccessCode;
 import com.sehako.streamboard.presentation.request.PostDetailRetrieveRequest;
+import com.sehako.streamboard.presentation.request.PostPatchRequest;
 import com.sehako.streamboard.presentation.request.PostRetrieveRequest;
 import com.sehako.streamboard.presentation.request.PostWriteRequest;
 import java.net.URI;
@@ -16,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -76,6 +78,23 @@ public class PostController {
     ) {
         Mono<PostDetailRetrieveResponse> response = postService
                 .retrievePostDetail(PostDetailRetrieveRequest.from(no));
+
+        SuccessCode success = SuccessCode.SUCCESS;
+        String message = messageSource.getMessage(success.getCode(), null, locale);
+
+        return response.map(data -> ResponseEntity
+                .ok(JsonResponse.of(success, message, data))
+        );
+    }
+
+    @PatchMapping("/{no}")
+    public Mono<ResponseEntity<JsonResponse<PostDetailRetrieveResponse>>> patchPostDetail(
+            @PathVariable Integer no,
+            @RequestBody PostPatchRequest request,
+            Locale locale
+    ) {
+        Mono<PostDetailRetrieveResponse> response = postService
+                .patchPostDetail(no, request);
 
         SuccessCode success = SuccessCode.SUCCESS;
         String message = messageSource.getMessage(success.getCode(), null, locale);

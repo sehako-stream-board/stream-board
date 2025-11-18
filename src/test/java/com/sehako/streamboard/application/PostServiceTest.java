@@ -5,6 +5,7 @@ import com.sehako.streamboard.application.response.PostRetrieveResponse;
 import com.sehako.streamboard.infrastructure.PostRepository;
 import com.sehako.streamboard.infrastructure.domain.Post;
 import com.sehako.streamboard.presentation.request.PostDetailRetrieveRequest;
+import com.sehako.streamboard.presentation.request.PostPatchRequest;
 import com.sehako.streamboard.presentation.request.PostRetrieveRequest;
 import com.sehako.streamboard.presentation.request.PostWriteRequest;
 import java.util.List;
@@ -92,4 +93,24 @@ class PostServiceTest {
 
     }
 
+    @Test
+    @DisplayName("사용자가 게시글을 수정하면 수정된 포스팅 상세 정보가 반환된다.")
+    void patchPostTest() {
+        // given
+        Post post = new Post(1, "title1", "content1");
+
+        // when
+        Mono<PostDetailRetrieveResponse> updated = postRepository.save(post)
+                .flatMap(p -> {
+                    PostPatchRequest request = new PostPatchRequest("newTitle", "newContent");
+                    return postService.patchPostDetail(p.getNo(), request);
+                });
+
+        // then
+        StepVerifier.create(updated)
+                .expectNextMatches(response ->
+                        response.title().equals("newTitle")
+                )
+                .verifyComplete();
+    }
 }

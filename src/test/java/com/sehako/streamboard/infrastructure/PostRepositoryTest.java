@@ -82,4 +82,26 @@ class PostRepositoryTest {
                 )
                 .verifyComplete();
     }
+
+    @Test
+    @DisplayName("사용자가 수정할 게시글에 대한 새로운 제목과 내용을 전달하면 게시글이 수정된다.")
+    void patchPostTest() {
+        // given
+        Post post = new Post(1, "title", "content");
+        Post savedPost = postRepository.save(post).block();
+
+        // when
+        postRepository.updatePost(savedPost.getNo(), "newTitle", "newContent").block();
+
+        Mono<Post> updatedPost = postRepository.findByNo(savedPost.getNo());
+
+        // then
+        StepVerifier.create(updatedPost)
+                .expectNextMatches(
+                        entity ->
+                                entity.getTitle().equals("newTitle")
+                                        && entity.getContent().equals("newContent")
+                )
+                .verifyComplete();
+    }
 }

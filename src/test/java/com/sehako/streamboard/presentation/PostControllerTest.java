@@ -7,6 +7,7 @@ import com.sehako.streamboard.application.response.PostDetailRetrieveResponse;
 import com.sehako.streamboard.application.response.PostRetrieveResponse;
 import com.sehako.streamboard.common.response.JsonResponse;
 import com.sehako.streamboard.presentation.request.PostDetailRetrieveRequest;
+import com.sehako.streamboard.presentation.request.PostPatchRequest;
 import com.sehako.streamboard.presentation.request.PostRetrieveRequest;
 import com.sehako.streamboard.presentation.request.PostWriteRequest;
 import java.time.LocalDateTime;
@@ -113,5 +114,30 @@ class PostControllerTest {
                 });
 
         // then
+    }
+
+    @Test
+    @DisplayName("사용자가 게시글 수정 요청을 보내면 새롭게 수정된 게시글이 반환된다.")
+    void patchPostTest() {
+        // given
+        PostPatchRequest request = new PostPatchRequest("newTitle", "newContent");
+
+        // when
+        Mockito.when(postService.patchPostDetail(1, request)).thenReturn(Mono.just(
+                new PostDetailRetrieveResponse(1, "newTitle", "newContent", LocalDateTime.now())
+        ));
+
+        // then
+        webTestClient.patch().uri("/post/{no}", 1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(new ParameterizedTypeReference<JsonResponse<PostDetailRetrieveResponse>>() {
+                })
+                .consumeWith(response -> {
+                    PostDetailRetrieveResponse data = response.getResponseBody().result();
+                    Assertions.assertThat(data.content()).isEqualTo("newContent");
+                });
     }
 }
