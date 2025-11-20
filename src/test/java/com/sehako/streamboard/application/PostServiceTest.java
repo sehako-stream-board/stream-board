@@ -39,7 +39,7 @@ class PostServiceTest {
     @DisplayName("사용자가 게시글을 포스팅하면 생성된 포스팅의 번호가 반환된다.")
     void postSaveIntegerReturnTest() {
         // given
-        PostWriteRequest request = new PostWriteRequest(1, "title", "content");
+        PostWriteRequest request = new PostWriteRequest("title", "content");
         // when
         Mono<Integer> postNo = postService.createPost(request);
         // then
@@ -54,11 +54,11 @@ class PostServiceTest {
     void postListRetrieveTest() {
         // given
         List<Post> posts = List.of(
-                new Post(1, "title1", "content1"),
-                new Post(1, "title2", "content2"),
-                new Post(1, "title3", "content3"),
-                new Post(1, "title4", "content4"),
-                new Post(1, "title5", "content5")
+                new Post("title1", "content1"),
+                new Post("title2", "content2"),
+                new Post("title3", "content3"),
+                new Post("title4", "content4"),
+                new Post("title5", "content5")
         );
         postRepository.saveAll(posts).subscribe();
 
@@ -77,7 +77,7 @@ class PostServiceTest {
     @DisplayName("사용자가 게시글을 조회하면 포스팅 조회 응답으로 반환된다.")
     void retrievePostingTest() {
         // given
-        Post post = new Post(1, "title1", "content1");
+        Post post = new Post("title1", "content1");
         Post savedPost = postRepository.save(post).block();
 
         PostDetailRetrieveRequest request = new PostDetailRetrieveRequest(savedPost.getNo());
@@ -97,7 +97,7 @@ class PostServiceTest {
     @DisplayName("사용자가 게시글을 수정하면 수정된 포스팅 상세 정보가 반환된다.")
     void patchPostTest() {
         // given
-        Post post = new Post(1, "title1", "content1");
+        Post post = new Post("title1", "content1");
 
         // when
         Mono<PostDetailRetrieveResponse> updated = postRepository.save(post)

@@ -40,7 +40,7 @@ class PostControllerTest {
     @DisplayName("사용자가 요청한 포스팅 생성이 성공하면 201 응답이 반환된다.")
     void userPostingWriteRequestTest() {
         // given
-        PostWriteRequest request = new PostWriteRequest(1, "title", "content");
+        PostWriteRequest request = new PostWriteRequest("title", "content");
 
         // when
         Mockito.when(postService.createPost(request)).thenReturn(Mono.just(1));
