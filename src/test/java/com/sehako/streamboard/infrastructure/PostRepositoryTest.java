@@ -32,7 +32,7 @@ class PostRepositoryTest {
     @DisplayName("사용자가 게시판에 글을 작성하면 데이터베이스에 저장된다.")
     void postSaveTest() {
         // given
-        Post post = new Post(1, "title", "content");
+        Post post = new Post("title", "content");
 
         // when
         Mono<Post> save = postRepository.save(post);
@@ -49,11 +49,11 @@ class PostRepositoryTest {
     void findPostsTest() {
         // given
         List<Post> posts = List.of(
-                new Post(1, "title1", "content1"),
-                new Post(1, "title2", "content2"),
-                new Post(1, "title3", "content3"),
-                new Post(1, "title4", "content4"),
-                new Post(1, "title5", "content5")
+                new Post("title1", "content1"),
+                new Post("title2", "content2"),
+                new Post("title3", "content3"),
+                new Post("title4", "content4"),
+                new Post("title5", "content5")
         );
 
         postRepository.saveAll(posts).subscribe();
@@ -69,7 +69,7 @@ class PostRepositoryTest {
     @DisplayName("사용자가 게시판 조회를 위해 게시판 번호를 전달하면 게시판 상세 정보를 조회한다.")
     void retrievePostDetailTest() {
         // given
-        Post post = new Post(1, "title", "content");
+        Post post = new Post("title", "content");
         Post savedPost = postRepository.save(post).block();
 
         // when
@@ -87,7 +87,7 @@ class PostRepositoryTest {
     @DisplayName("사용자가 수정할 게시글에 대한 새로운 제목과 내용을 전달하면 게시글이 수정된다.")
     void patchPostTest() {
         // given
-        Post post = new Post(1, "title", "content");
+        Post post = new Post("title", "content");
         Post savedPost = postRepository.save(post).block();
 
         // when
@@ -109,7 +109,7 @@ class PostRepositoryTest {
     @DisplayName("사용자가 삭제할 게시글 번호를 전달하면 게시글이 삭제된다.")
     void deletePostTest() {
         // given
-        Post post = new Post(1, "title", "content");
+        Post post = new Post("title", "content");
         Post savedPost = postRepository.save(post).block();
 
         // when
